@@ -1,0 +1,156 @@
+.content {
+	margin: 0 4.2%;
+	width: 65%;
+	height: auto;
+	/*background-color: lightgray;*/
+}
+
+.content_head {
+	border-bottom: 2px solid #616161;
+}
+
+.content_head p {
+	margin: 0;
+}
+
+.content_title {
+	/*float: left;*/
+	font-size: 20pt;
+	font-weight: 900;
+	line-height: 150%;
+	padding-left: 0px;
+	padding-top: 0;
+	padding-bottom: 25px;
+	color: #3b3b3b;
+}
+
+.content_inner_lead {
+	line-height: 150%;
+	padding-bottom: 25px;
+	font-size: 14pt;
+}
+
+.content_body {
+	margin-top: 30px;
+	font-size: 12pt;
+	line-height: 170%;
+	padding: 0 10px;
+	padding-bottom: 50px;
+	color: #242424;
+}
+
+.content_body img {
+	margin: 20px 12.5%;
+	width: 700px;
+}
+
+.content_lead {
+	font-size: 16pt;
+	margin-bottom: 25px;
+	line-height: 180%;
+	color: #404040;
+}
+
+.content_lead p {
+	margin: 0;
+}
+
+.content_link {
+	margin-top: 50px;
+}
+
+.content_link a {
+	text-decoration: none;
+}
+
+.content_bar {
+	position: sticky;
+	top: 0;
+	margin: 0 -4.9%;
+	width: 100%;
+	background-color: white;
+	padding-top: 10px;
+	padding-bottom: 2px;
+}
+
+.content_bar ul {
+	position: absolute;
+	padding: 0;
+	margin: 0;
+}
+
+.content_edit_button {
+	display: inline-block;
+	width: 40px;
+	height: 40px;
+	background-color: white;
+	background-size: 40px;
+	background-image: url(https://cdn-icons-png.flaticon.com/512/9283/9283127.png);
+	border-radius: 5px;
+	cursor: pointer;
+	/*
+	https://cdn-icons-png.flaticon.com/512/9714/9714318.png
+	https://cdn-icons-png.flaticon.com/512/9533/9533098.png
+	https://cdn-icons-png.flaticon.com/512/9759/9759207.png
+	https://cdn-icons-png.flaticon.com/512/9283/9283127.png
+	*/
+}
+
+.content_buttons {
+	position: absolute;
+	margin-top: 5px;
+	display: inline-block;
+	color: #fff;
+	font-size: 12pt;
+	font-weight: 600;
+	line-height: 35px;
+	width: 100%;
+}
+
+.content_save_button {
+	float: left;
+	margin-left: 15px;
+	cursor: pointer;
+	height: 35px;
+	padding: 0 10px;
+	background-color: #5497e3;
+	border-radius: 10px;
+	text-align: center;
+	vertical-align:middle;
+}
+
+.content_reset_button {
+	float: left;
+	margin-left: 15px;
+	cursor: pointer;
+	height: 35px;
+	padding: 0 10px;
+	background-color: #e35454;
+	border-radius: 10px;
+	text-align: center;
+	vertical-align:middle;
+}
+.content_decline_button {
+	float: right;
+	right: 0;
+	cursor: pointer;
+	height: 35px;
+	padding: 0 10px;
+	background-color: #e35454;
+	border-radius: 10px;
+	text-align: center;
+	vertical-align:middle;
+}
+
+.content_publish_button {
+	display: inline-block;
+	float: right;
+	margin-right: 2%;
+	cursor: pointer;
+	height: 35px;
+	padding: 0 10px;
+	background-color: #60e354;
+	border-radius: 10px;
+	text-align: center;
+	vertical-align:middle;
+}
