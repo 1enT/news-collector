@@ -1,0 +1,6 @@
+rais.tatarstan.ru # Раис
+tatar-inform.ru # Татар-Информ
+-https://kzn.ru # Казань
+-nabchelny.ru # Наб.Челны
+-http://городелабуга.рф # Елабужский
+-www.e-nkama.ru # Нижнекамский

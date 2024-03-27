@@ -1,0 +1,17 @@
+.create_news_button {
+	position: fixed;
+	left: 3%;
+	margin-top: 5px;
+	padding: 5px 15px;
+	line-height: 150%;
+	background-color: #b5e5ff; /* b5e5ff*/
+	color: #0132b2; /*2391cc 00749e*/
+	/*font-family: Dudka Bold;*/
+	cursor: pointer;
+	border-radius: 5px;
+	border: 1px solid #52abff;
+}
+
+.create_news_button:hover {
+	background-color: #99dbff; /* 75cfff*/
+}
