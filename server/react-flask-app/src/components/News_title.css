@@ -2,11 +2,15 @@
 	list-style-type: none;
 	display: block;
 	width: 100%;
-	margin-top: 30px;
+	margin-bottom: 30px;
 	cursor: pointer;
 	/*box-sizing: border-box;
 	background-color: gray;
 	border: 1px solid #0d0d0d;*/
+}
+
+.news:first-child {
+	margin-top: 50px;
 }
 
 .news:hover .news_title {
@@ -15,6 +19,8 @@
 
 .news:hover {
 	background-color: #e0e0e0;
+	
+	/*background-color: #89bfd9;*/
 }
 
 .news_body {
@@ -28,6 +34,9 @@
 	padding-left: 10px;
 	padding-right: 15px;
 	font-size: 12pt;
+
+	font-family: Dudka Regular;
+	color: #00749e;
 }
 
 .news_title {
@@ -36,6 +45,8 @@
 	padding-right: 10px;
 	font-size: 12pt;
 	line-height: 150%;
+
+	font-family: Dudka Bold;
 }
 
 .news_date {
@@ -46,6 +57,6 @@
 
 
 .news_active {
-	border-right: 4px solid #a3a3a3;
+	border-right: 4px solid #658da1; /* a3a3a3*/
 	color: #0032ab;
 }

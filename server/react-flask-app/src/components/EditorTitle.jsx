@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useRef } from 'react'
 import { createEditor, Editor, Transforms } from 'slate'
 import { Slate, Editable, withReact } from 'slate-react'
 
@@ -17,8 +17,6 @@ const EditorTitleComponent = () => {
     const renderElement = useCallback(props => {
         //console.log(props.element.type)
         switch (props.element.type) {
-            case 'code':
-                return <p >TEST</p>
             default:
                 return <p {...props.attributes}>{props.children}</p>
         }

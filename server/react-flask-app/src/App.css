@@ -3,7 +3,7 @@ body {
 	padding: 0;
 	font-family: Verdana, sans-serif; /*Golos,sans-serif;*/
 	color: #161617;
-	background-color: #ededed; /*e0e0e0*/
+	background-color: #ededed; /*e0e0e0 ededed a6d0e4*/
 }
 
 .container {
@@ -26,9 +26,32 @@ body {
 .list_news {
 	width: 28%;
 	height: 100%;
+	/*color: #1a0841;*/
+	position: relative;
 }
 
 .list_news ul {
 	margin: 0;
 	padding: 0;
+}
+
+@font-face {
+	font-family: "Dudka Regular";
+	src: url("fonts/Dudka Regular.ttf") format("truetype"); 
+	font-style: normal; 
+	font-weight: normal; 
+}
+
+@font-face {
+	font-family: "Dudka Bold";
+	src: url("fonts/Dudka Bold.ttf") format("truetype"); 
+	font-style: normal; 
+	font-weight: bold; 
+}
+
+@font-face {
+	font-family: "Dudka Thin";
+	src: url("fonts/Dudka Thin.ttf") format("truetype"); 
+	font-style: normal; 
+	font-weight: thin; 
 }

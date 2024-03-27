@@ -1,11 +1,16 @@
+
+#from parsers.Parser import Pra_Parser
+
 import requests
 from bs4 import BeautifulSoup
+import bs4
 from collections import deque
 import re
 import json
 import copy
 
 from datetime import datetime, date
+
 import locale
 locale.setlocale(locale.LC_ALL, ('ru_RU', 'UTF-8'))
 
@@ -17,6 +22,7 @@ class Rais:
 			   "link": "https://rais.tatarstan.ru/index.htm/index.htm/news/2166288.htm",
 			   "img_url": None}
 		self.last_news = deque()
+		self.source = "Раис"
 		self.__cookies = {
 							'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
 							'accept-encoding': 'gzip, deflate, br',
@@ -42,7 +48,7 @@ class Rais:
 		lead = BeautifulSoup(last_one['lead'], "html.parser").string
 		link = "https://rais.tatarstan.ru" + last_one['url']
 
-		self.__current_new = {"source": "rais", "time": time, "title": title, "lead": lead, "link": link, "img_url": None}
+		self.__current_new = {"source": self.source, "time": time, "title": title, "lead": lead, "link": link, "img_url": None}
 
 	def find_last_news(self):
 		page = requests.get("https://rais.tatarstan.ru/index.htm/news?format=json&limit=15&page=1", stream = True, headers = self.__cookies)
@@ -50,28 +56,88 @@ class Rais:
 
 		for per_new in data['items']:
 			time = datetime.strptime(per_new['news_date'], "%Y-%m-%d")
-			if self.__current_new['time'] <= time:
+			if self.__current_new['time'] < time:
 				title = per_new['title']
 				lead = BeautifulSoup(per_new['lead'], "html.parser").string
+				#text = self.__parse_news_body(per_new)
+				text = json.dumps(self.__parse_news_body(link), ensure_ascii=False).encode('utf8').decode()
 				link = "https://rais.tatarstan.ru" + per_new['url']
 				if title == self.__current_new['title']:
 					break
 				if per_new['image_file_big'] != None:
 					img_url = 'https://rais.tatarstan.ru' + per_new['image_file_big']
 				else:
-					if per_new['photoreport']['url'] != None:
-						num = re.search(r"\d+", per_new['photoreport']['url'])[0]
-						page = requests.get('https://rais.tatarstan.ru/index.htm/news/?format=json&export=photos&measure_id=' + num, stream = True, headers = self.__cookies)
-						data = json.loads(page.text)
-						img_url = 'http://rais.tatarstan.ru' + data['items'][1]['image_view']
-					else:
-						img_url = None
-				self.last_news.append({"source": "rais", "time": time, "title": title, "lead": lead, "text": "", "link": link, "img_url": img_url})
+					img_url = None
+				# else:
+				# 	if per_new['photoreport']['url'] != None:
+				# 		num = re.search(r"\d+", per_new['photoreport']['url'])[0]
+				# 		page = requests.get('https://rais.tatarstan.ru/index.htm/news/?format=json&export=photos&measure_id=' + num, stream = True, headers = self.__cookies)
+				# 		data = json.loads(page.text)
+				# 		img_url = 'http://rais.tatarstan.ru' + data['items'][1]['image_view']
+				# 	else:
+				# 		img_url = None
+				self.last_news.append({"source": self.source, "time": time, "title": title, "lead": lead, "text": text, "link": link, "img_url": img_url})
 			else:
 				break
 
 		if len(self.last_news) > 0:
 			self.__current_new = self.last_news[0]
+
+	def __parse_news_body(self, new):
+		soup = BeautifulSoup(new['text'], "html.parser")
+		
+		parsed_content = []
+		is_there_img = new['image_file_big']
+		if is_there_img is not None:
+			parsed_tag = {
+					"type": "img",
+					"src": 'https://rais.tatarstan.ru' + new['image_file_big'],
+					"children": [{"text": ""}]
+				}
+			parsed_content.append(parsed_tag)
+		for item in soup.children:
+			parsed_paragraph = self.__children_search(item)
+			parsed_tag = {
+				"type": "p",
+				"children": parsed_paragraph
+			}
+			parsed_content.append(parsed_tag)
+
+		return parsed_content
+
+	def __children_search(self, tag):
+		parsed_tag = []
+
+		for piece in tag.children:
+			if isinstance(piece, bs4.element.NavigableString):
+				parsed_piece = {
+					"type": "plain",
+					"text": piece.text
+				}
+				parsed_tag.append(parsed_piece)
+			else:
+				if piece.name == 'a':
+					parsed_piece = {
+						"type": "a",
+						"href": piece["href"],
+						"text": piece.text
+					}
+
+				if piece.name == 'b' or piece.name == 'strong':
+					parsed_piece = {
+						"type": "plain",
+						"bold": "true",
+						"text": piece.text
+					}
+
+				if piece.name == 'i' or piece.name == 'em':
+					parsed_piece = {
+						"type": "plain",
+						"cursive": "true",
+						"text": piece.text
+					}
+				parsed_tag.append(parsed_piece)
+		return parsed_tag
 
 	def get_last_news(self):
 		news = copy.deepcopy(self.last_news)

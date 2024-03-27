@@ -24,12 +24,6 @@
 	color: #3b3b3b;
 }
 
-/*.content_inner_lead {
-	line-height: 150%;
-	padding-bottom: 25px;
-	font-size: 14pt;
-}*/
-
 .content_lead {
 	line-height: 150%;
 	padding-bottom: 25px;
@@ -45,9 +39,14 @@
 	color: #242424;
 }
 
+.content_body>div {
+	min-height: 300px;
+}
+
 .content_body img {
 	margin: 20px 12.5%;
-	width: 700px;
+	max-width: 700px;
+	max-height: 500px;
 }
 
 /*.content_lead {
@@ -65,18 +64,18 @@
 	margin-top: 50px;
 }
 
-.content_link a {
+a, a:active {
 	text-decoration: none;
+	color: #0000ee;
 }
 
 .content_bar {
 	position: sticky;
 	top: 0;
 	margin: 0 -4.9%;
-	width: 100%;
+	width: 150%;
 	background-color: white;
 	padding-top: 10px;
-	padding-bottom: 2px;
 }
 
 .content_bar ul {
@@ -86,12 +85,14 @@
 }
 
 .content_edit_button {
+	float: left;
 	display: inline-block;
-	width: 40px;
-	height: 40px;
+	width: 35px;
+	height: 35px;
 	background-color: white;
-	background-size: 40px;
-	background-image: url(https://cdn-icons-png.flaticon.com/512/9283/9283127.png);
+	background-size: 35px;
+	background-image: url(../icons/edit_button.png);
+	background-repeat: no-repeat;
 	border-radius: 5px;
 	cursor: pointer;
 	/*
@@ -102,61 +103,258 @@
 	*/
 }
 
-.content_buttons {
-	position: absolute;
+.content_style_buttons {
 	margin-top: 5px;
+	margin-bottom: 10px;
+	padding-bottom: 5px;
 	display: inline-block;
-	color: #fff;
-	font-size: 12pt;
-	font-weight: 600;
-	line-height: 35px;
-	width: 100%;
+	font-size: 20pt;
+	/*width: 100%;*/
+	color: #87c5ff;
+	border-bottom: 2px solid #52abff;
 }
 
-.content_save_button {
+.content_style_buttons_active {
+	color: #0084ff;
+}
+
+.content_style_buttons_bold {
 	float: left;
-	margin-left: 15px;
+	display: inline-block;
+	font-weight: 600;
+	margin-left: 10px;
 	cursor: pointer;
-	height: 35px;
-	padding: 0 10px;
-	background-color: #5497e3;
-	border-radius: 10px;
-	text-align: center;
-	vertical-align:middle;
+	user-select: none;
+}
+
+.content_style_buttons_italic {
+	float: left;
+	display: inline-block;
+	font-style: italic;
+	margin-left: 10px;
+	cursor: pointer;
+	user-select: none;
+}
+
+.content_style_buttons_underline {
+	float: left;
+	display: inline-block;
+	text-decoration: underline;
+	margin-left: 10px;
+	cursor: pointer;
+	user-select: none;
+}
+
+.content_style_buttons_quote {
+	display: inline-block;
+	margin-left: 6px;
+	width: 28px;
+	height: 25px;
+	background-size: 30px;
+	background-image: url(../icons/quote_2.png);
+	background-repeat: no-repeat;
+	cursor: pointer;
+	/*
+		https://img.icons8.com/?size=512&id=c41KdEyb1Q61&format=png
+		https://img.icons8.com/?size=512&id=1BYH0ZFsjeIy&format=png
+	*/
+}
+
+.content_style_buttons_link {
+	display: inline-block;
+	margin-left: 6px;
+	width: 26px;
+	height: 26px;
+	background-size: 30px;
+	background-image: url(../icons/icon_link.png);
+	background-repeat: no-repeat;
+	cursor: pointer;
+	/*
+		https://img.icons8.com/?size=512&id=c41KdEyb1Q61&format=png
+		https://img.icons8.com/?size=512&id=1BYH0ZFsjeIy&format=png
+	*/
+}
+
+.content_style_buttons_image {
+	display: inline-block;
+	margin-left: 6px;
+	width: 28px;
+	height: 24px;
+	background-size: 28px;
+	background-image: url("../icons/icon_img_upload_3.png");
+	background-repeat: no-repeat;
+	cursor: pointer;
+}
+
+.content_style_buttons_image_upload {
+	display: inline-block;
+	margin-left: 6px;
+	width: 28px;
+	height: 24px;
+	background-size: 28px;
+	background-image: url(../icons/icon_img_link.png);
+	background-repeat: no-repeat;
+	cursor: pointer;
+	/*
+		https://img.icons8.com/?size=512&id=bjHuxcHTNosO&format=png
+		https://img.icons8.com/?size=512&id=41735&format=png
+		https://img.icons8.com/?size=512&id=yRoFUHiH0uft&format=png
+	*/
+}
+
+.content_style_buttons_image_upload_input {
+	display: none;
+}
+
+.content_style_buttons_link_input {
+	vertical-align: middle;
+	position: absolute;
+	margin-top: 3px;
+	width: 280px;
+	height: 30px;
+	background-color: #a6d0f5;
+	border-radius: 6px;
+	border: 2px solid #52abff;
+	padding-left: 0.5rem;
+	padding-right: 0.5rem;
+	padding-top: 0rem;
+	padding-bottom: 0.5rem;
+	/*
+		#93badb
+	*/
+}
+
+.content_style_buttons_link_input input {
+    vertical-align: middle;
+	display: inline-block;
+    width: 80%;
+    height: 1.5em;
+	padding: 0;
+	margin: 0;
+	font-size: 1rem;
+	box-sizing: border-box;
+	outline: none;
+}
+
+.content_style_buttons_link_input_enter {
+	position: absolute;
+	display: inline-block;
+	float: right;
+	right: 2.1rem;
+    top: 0;
+    bottom: 0;
+    margin: auto 0;
+
+	width: 1em;
+	height: 1em;
+	background-size: 1em;
+	background-image: url(../icons/back_arrow_3.png);
+	background-repeat: no-repeat;
+	cursor: pointer;
+	box-sizing: border-box;
+}
+
+.content_style_buttons_link_input_abort {
+	position: absolute;
+	display: inline-block;
+	float: right;
+	right: 0.2rem;
+    top: 0;
+    bottom: 0;
+    margin: auto 0;
+
+	width: 1em;
+	height: 1em;
+	background-size: 1em;
+	background-image: url(../icons/cross_1.png);
+	background-repeat: no-repeat;
+	cursor: pointer;
+	box-sizing: border-box;
+	/*
+		https://img.icons8.com/?size=512&id=79023&format=png
+	*/
 }
 
 .content_reset_button {
-	float: left;
-	margin-left: 15px;
+	display: inline-block;
+	margin-left: 10px;
+	margin-right: 10px;
+	width: 26px;
+	height: 24px;
+	background-color: white;
+	background-size: 28px;
+	background-image: url(../icons/reset_button.png);
+	background-repeat: no-repeat;
 	cursor: pointer;
-	height: 35px;
-	padding: 0 10px;
-	background-color: #e35454;
-	border-radius: 10px;
-	text-align: center;
-	vertical-align:middle;
+	border-left: 2px solid #52abff;
+	padding-left: 5px;
+	background-origin: content-box;
+	background-clip: content-box;
+	/*
+		https://img.icons8.com/?size=512&id=vjT3C56Kcp5k&format=png
+		https://img.icons8.com/?size=512&id=XgNrImBOX1KO&format=png
+		https://img.icons8.com/?size=512&id=g1jYHowBS8BN&format=png
+	*/
 }
+
 .content_decline_button {
-	float: right;
-	right: 0;
+	display: inline-block;
+	margin-right: 10px;
+	width: 20px;
+	height: 24px;
+	background-color: white;
+	background-size: 22px;
+	background-image: url(../icons/decline_button.png);
+	background-repeat: no-repeat;
 	cursor: pointer;
-	height: 35px;
-	padding: 0 10px;
-	background-color: #e35454;
-	border-radius: 10px;
-	text-align: center;
-	vertical-align:middle;
+	border-left: 2px solid #52abff;
+	padding-left: 5px;
+	background-origin: content-box;
+	background-clip: content-box;
+	/*
+		https://img.icons8.com/?size=512&id=41641&format=png
+	*/
 }
 
 .content_publish_button {
 	display: inline-block;
-	float: right;
-	margin-right: 2%;
+	width: 25px;
+	height: 24px;
+	background-color: white;
+	background-size: 25px;
+	background-image: url(../icons/publish_button.png);
+	background-repeat: no-repeat;
 	cursor: pointer;
-	height: 35px;
-	padding: 0 10px;
-	background-color: #60e354;
-	border-radius: 10px;
-	text-align: center;
-	vertical-align:middle;
+	border-left: 2px solid #52abff;
+	padding-left: 5px;
+	background-origin: content-box;
+	background-clip: content-box;
+	/*
+		https://img.icons8.com/?size=512&id=TDuPAzxEvfuE&format=png
+		https://img.icons8.com/?size=512&id=g8ltXTwIfJ1n&format=png
+		https://img.icons8.com/?size=512&id=ZznWGhUzgWtS&format=png
+		https://img.icons8.com/?size=512&id=DsyNcvGdiwDH&format=png
+		https://img.icons8.com/?size=512&id=FpuBglgBxX4C&format=png
+	*/
+}
+
+blockquote {
+	position: relative;
+	width: 600px;
+	margin-left: 40px;
+	padding-left: 10px;
+	padding-right: 10px;
+	border-left: 5px solid #52abff;
+	border-radius: 2px;
+	/*quotes: '«' '»';*/
+}
+
+blockquote::after {
+	content: '”';
+	font-family: 'Georgia', 'Times New Roman', serif;
+	font-size: 30pt;
+	color: #52abff;
+	position: absolute;
+	right: 0;
+	top: 0.125em;
 }

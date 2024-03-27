@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+import bs4
 from collections import deque
 import re
 import json
@@ -10,6 +11,8 @@ from datetime import datetime, date
 import locale
 locale.setlocale(locale.LC_ALL, ('ru_RU', 'UTF-8'))
 
+#from parsers.Parser import Pra_Parser
+
 class Tatar_inform:
 	def __init__(self, url = "", url_to_files = "supportive files"):
 		self.url_to_files = url_to_files
@@ -19,6 +22,7 @@ class Tatar_inform:
 			   "link": "https://www.tatar-inform.ru/news/budut-pokemony-i-nlo-zaxarova-otvetila-na-soobshheniya-vlastei-ssa-o-vnezemnyx-obektax-5896657",
 			   "img_url": None}
 		self.last_news = deque()
+		self.source = "Татар-информ"
 		self.__cookies = {
 								'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
 								'accept-encoding': 'gzip, deflate, br',
@@ -45,7 +49,7 @@ class Tatar_inform:
 		img_url = last_one.find('img')
 		if img_url != None:
 			img_url = img_url.get('src')
-		self.__current_new = {"source": "tatar-inform", "time": time, "title": title, "lead": "", "link": link, "img_url": img_url}
+		self.__current_new = {"source": self.source, "time": time, "title": title, "lead": "", "link": link, "img_url": img_url}
 
 	def find_last_news(self):
 		page = requests.get("https://www.tatar-inform.ru/news", stream = True, headers = self.__cookies)
@@ -54,20 +58,169 @@ class Tatar_inform:
 
 		for i, each_new in enumerate(list_of_news):
 			time = self.__get_date(each_new.find(attrs={"class":"newsList__item-date"}).contents)
+			# ????? if self.__current_new['time'] <= time:
 			if self.__current_new['time'] <= time:
 				title = each_new.find(attrs={"class":"newsList__item-title"}).string.strip()
 				link = each_new.find(attrs={"class":"newsList__item-text"}).get('href')
+				text = json.dumps(self.__parse_news_body(link), ensure_ascii=False).encode('utf8').decode()
+				# raw_text, text = self.__parse_news_body(link)
+				# text = json.dumps(text, ensure_ascii=False).encode('utf8').decode()
+				lead = self.__parse_news_lead(link)
 				img_url = each_new.find('img')
 				if img_url != None:
 					img_url = img_url.get('src')
 				if title == self.__current_new['title']:
 					break
-				self.last_news.append({"source": "tatar-inform", "time": time, "title": title, "lead": "", "text": "", "link": link, "img_url": img_url})
+				# if lead != '':
+				# 	raw_text = lead + '\n' + raw_text
+				self.last_news.append({"source": self.source, "time": time, "title": title, "lead": lead, "text": text, "link": link, "img_url": img_url})
 			else:
 				break
 
 		if len(self.last_news) > 0:
 			self.__current_new = self.last_news[0]
+
+	def __parse_news_lead(self, url):
+		page = requests.get(url, stream = True, headers = self.__cookies)
+		soup = BeautifulSoup(page.content, "html.parser")
+		content = soup.find(attrs={"class": "main__news-lead"})
+		lead = content.text
+		if lead.replace(' ', '').replace('\n', '') == '':
+			return ''
+		else:
+			return lead.replace('\n', '').strip()
+
+
+	def __parse_news_body(self, url):
+		page = requests.get(url, stream = True, headers = self.__cookies)
+		soup = BeautifulSoup(page.content, "html.parser")
+		content = soup.find(attrs={"class": "main__text"})
+		content_overview = content.find(attrs={"class": "page-main__overview"})
+		content_text = content.find(attrs={"class": "page-main__text"})
+		content_embed_media = content.find(attrs={"class": "page-main__embed-media"})
+
+		parsed_content = []
+		if content_overview is not None:
+			content_overview = content_overview.find('img')['src']
+			parsed_content.append(
+				{
+					"type": "img",
+					"src": content_overview,
+					"children": [{"text": ""}]
+				}
+			)
+
+		content_text = [i for i in content_text.children if i != '\n']
+		for item in content_text:
+			#is_img = [i for i in item.descendants if i.name == "img"]
+			#if len(is_img) != 0:
+			#if item.name == 'figure':
+			img = item.find('img')
+			if img != -1 and img is not None:
+				img_src = img['src']
+				parsed_tag = {
+						"type": "img",
+						"src": img_src,
+						"children": [{"text": ""}]
+					}
+				parsed_content.append(parsed_tag)
+			#elif item.name == 'p':
+			else:
+				parsed_paragraph = self.__parse_tags(item)
+				parsed_tag = {
+						"type": "p",
+						"children": parsed_paragraph
+					}
+				if parsed_tag['children'] == []:
+					continue
+				parsed_content.append(parsed_tag)
+
+		if content_embed_media is not None:
+			content_embed_media = content_embed_media.find_all('img')
+			for item in content_embed_media:
+				parsed_content.append(
+					{
+						"type": "img",
+						"src": item['data-splide-lazy'],
+						"children": [{"text": ""}]
+					}
+				)
+
+		return parsed_content
+
+	def __parse_tags(self, tag):
+		parsed_tag = []
+
+		for piece in tag.children:
+			if isinstance(piece, bs4.element.NavigableString):
+				# Символ пустой строки нужен иногда, чтобы имитировать абзацы
+				parsed_piece = {
+					"type": "plain",
+					"text": piece.text
+				}
+				parsed_tag.append(parsed_piece)
+			else:
+				if piece.name == 'a':
+					parsed_piece = {
+						"type": "a",
+						"href": piece["href"],
+						"text": piece.text
+					}
+
+				if piece.name == 'b' or piece.name == 'strong':
+					parsed_piece = {
+						"type": "plain",
+						"bold": "true",
+						"text": piece.text
+					}
+
+				if piece.name == 'i' or piece.name == 'em':
+					parsed_piece = {
+						"type": "plain",
+						"cursive": "true",
+						"text": piece.text
+					}
+
+				if piece.name == 'var':
+					parsed_piece = {
+						"type": "plain",
+						"text": piece.text
+					}
+
+				if piece.name == 'iframe':
+					continue
+				if piece.name == 'script':
+					continue
+				if piece.name == 'br':
+					continue
+
+				if piece.name == 'span':
+					parsed_tag += self.__parse_tags(piece)
+				elif piece.name == 'article':
+					parsed_tag += self.__parse_tags(piece)
+				elif piece.name == 'p':
+					parsed_tag += self.__parse_tags(piece)
+				else:
+					parsed_tag.append(parsed_piece)
+			
+		return parsed_tag
+
+	# def __squeeze_tags(self, tag):
+	# 	squeezed_tags = ""
+
+	# 	for piece in tag.children:
+	# 		if piece.name == 'iframe' or piece.name == 'script':
+	# 			continue
+	# 		if piece.name == 'span':
+	# 			squeezed_tags += self.__squeeze_tags(piece)
+	# 		elif piece.name == 'article':
+	# 			squeezed_tags += self.__squeeze_tags(piece)
+	# 		elif piece.name == 'p':
+	# 			squeezed_tags += self.__squeeze_tags(piece)
+	# 		else:
+	# 			squeezed_tags.append()
+
+	# 	return squeezed_tags
 
 	def get_last_news(self):
 		news = copy.deepcopy(self.last_news)
@@ -98,16 +251,22 @@ class Tatar_inform:
 if __name__ == "__main__":
 	parser = Tatar_inform()
 	parser.fix_last_new()
+	print(parser.current_new())
+
 	#parser.find_last_news()
 	#print(parser.current_new())
 	#print(parser._Tatar_inform__current_new)
-	print(parser.current_new())
-	print('-----------------------------------------------------')
-	print('-----------------------------------------------------')
-	for i in range(240):
-		parser.find_last_news()
-		if len(parser.get_last_news()) > 0:
-			print(parser.get_last_news())
-			print('-----------------------------------------------------')
-			parser.drop_last_news()
-		time.sleep(30)
+	# print(parser.current_new())
+	# print('-----------------------------------------------------')
+	# print('-----------------------------------------------------')
+	# for i in range(240):
+	# 	parser.find_last_news()
+	# 	if len(parser.get_last_news()) > 0:
+	# 		print(parser.get_last_news())
+	# 		print('-----------------------------------------------------')
+	# 		parser.drop_last_news()
+	# 	else:
+	# 		print('havent got any {}'.format(datetime.now().strftime("%H:%M:%S")))
+	# 		print()
+	# 		print('-----------------------------------------------------')
+	# 	time.sleep(30)
