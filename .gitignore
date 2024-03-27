@@ -178,3 +178,7 @@ telegram_error_logs.log
 telegram_logs.log
 logs.log
 logs_test.log
+
+# Test files
+test.py
+test/

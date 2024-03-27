@@ -7,7 +7,6 @@ import logging
 
 import pymorphy3
 import functools
-from searcher_test import get_data
 
 class Searcher:
 	def __init__(self, deviation = 0.25, process_count = 1):
